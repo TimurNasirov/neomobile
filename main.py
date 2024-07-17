@@ -3,6 +3,14 @@ from firebase_admin.firestore import client
 from requests import get
 from schedule import every, run_pending
 
+from python_dotenv import load_dotenv
+from os import getenv
+load_dotenv()
+MESSAGE = getenv("MESSAGE")
+TIME = getenv("TIME")
+BALANCE = getenv("BALANCE")
+
+
 cred = credentials.Certificate("key.json")
 initialize_app(cred)
 db = client()
@@ -34,13 +42,13 @@ def send_push(token, title, body):
 def main():
     db_users = get_users('us_id')
     db_users_id = get_users('token')
-    st_users = get('https://testus.neotelecom.kg/api.php?key=aspergilus&cat=customer&action=get_customers_id&state_id=2&balance_to=61').json()['data']
+    st_users = get(f'https://testus.neotelecom.kg/api.php?key=aspergilus&cat=customer&action=get_customers_id&state_id=2&balance_to={BALANCE}').json()['data']
 
     for i in st_users:
         if i in db_users:
-            send_push(db_users_id[db_users.index(i)], 'Neomobile', 'Ваш баланс меньше 30! Пополните баланс')
+            send_push(db_users_id[db_users.index(i)], 'Neomobile', MESSAGE)
 
-every().day.at("18:00").do(main)
+every().day.at(TIME).do(main)
 
 while True:
     run_pending()
