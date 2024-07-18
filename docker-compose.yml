@@ -1,7 +1,7 @@
 version: 3
 services:
   main:
-    image: https://github.com/TimurNasirov/neomobile/
+    image: https://github.com/timurnasirov/neomobile
     restart: always
     command: python main.py
     networks:
